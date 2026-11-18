@@ -1,0 +1,623 @@
+Draft-to-Lean statement, proof-strategy and coverage audit — 2026-11-05
+
+MANUSCRIPT NUMBERING NOTE — 2026-11-15
+The current manuscript splits the former Definition 6.5 into Definition 6.5
+(relative injectivity) and Definition 6.6 (universal disposition). Former
+results 6.6–6.20 are now 6.7–6.21. Their Lean declarations are unchanged.
+Numbering and page references in this historical audit remain those of its
+reference PDF; ../README.md gives the current manuscript correspondence.
+
+IMPORT CONSOLIDATION NOTE — 2026-11-15
+The eleven import-only compatibility files have been removed. FreeProducts.lean
+now directly imports all 50 mathematical modules; internal imports name their
+dependencies directly. The current module guide is the Source organization
+section of ../README.md, the repository's single general README.
+The older file paths and source hashes below remain historical audit records.
+
+FILE RENAME NOTE — 2026-11-11
+Revisiting-C(K).lean is now Consequences/ContinuousFunctionEmbeddings.lean.
+Paths, line numbers and hashes below describe the source at the time of this audit.
+
+REFERENCE
+Library/Free_products_of_vector_lattices.pdf — 37 pages.
+Identical to the new download Free_products_of_vector_lattices (2).pdf.
+SHA-256: 74097547e77f5cf83b080de9dbc1acdddde45e0c92a957fda7a3db2ff907f5df
+This report supersedes the previous audit of the 29-page PDF. VLFreeProds.tex
+is not the reference. Numbering and page numbers below belong to the new PDF.
+
+VERDICT
+All 49 numbered results have corresponding proved Lean statements, sometimes
+split across declarations or expressed by equivalent universal properties.
+Both numbered definitions are represented faithfully. The previously missing
+join equivalence (Proposition 4.10), weaker extension theorem (Observation 6.15),
+and unnumbered cone-product AVL equivalence (p. 14) are now explicitly stated
+and proved. No missing main draft conclusion was found in this audit.
+This verdict concerns mathematical statements and their central arguments;
+proof-organization differences and auxiliary claims not separately packaged
+are documented below. It does not claim a line-by-line translation of the PDF.
+
+METHOD AND SCOPE
+Read the mathematical body of the new PDF and compare every numbered statement
+with the Lean signatures, surrounding definitions and proof helpers. Compare the
+main mathematical proof steps separately from the theorem statements. COVERED
+means the result is represented by the listed proved declarations; it does not
+mean every displayed map or intermediate assertion in its proof has been given
+a separate declaration. Proof variations are identified below, especially where
+the draft's explicit construction is replaced by another one. This is a manual
+mathematical correspondence audit, not a machine-checked translation of the PDF.
+The bibliography, historical claims, introductions to earlier papers, and the
+TBD formalization/AI-use sections are not new theorem obligations in this audit.
+The preceding alignment pass added the three missing statements and proofs.
+This proof-alignment pass changed Counterexamples.lean and CountableSpectra.lean
+to follow the displayed constructions in Examples 4.9 and 5.4 and Theorem 6.18.
+Their public declarations are unchanged.
+
+PROOF VERIFICATION — HISTORICAL LEAN 4.32 CHECK
+Counterexamples.lean and CountableSpectra.lean were rebuilt from fresh source
+snapshots after the proof replacements. The other nine sources match their
+earlier checked snapshots. All 11 current sources have successful kernel checks.
+Rechecked 928 named declaration axiom reports, including private helpers.
+All 87 declarations cited for numbered results, and the new cone-product
+equivalence, use only propext, Classical.choice and Quot.sound, or a subset.
+Structures and anonymous instances were compiled and, when used, checked through
+the dependencies of these declarations. No other nonstandard axiom occurred in
+the named-declaration reports except the two existing sorryAx cases below.
+
+Remaining source sorries, unrelated to the current draft results:
+  FreeProducts/BL-FreeProducts.lean:675, in complemented_l1_in_prod_imp (:662).
+  FreeProducts/BL-FreeProducts.lean:735, in isOrderContinuousNorm_dual (:729).
+Neither is a dependency of any declaration cited for a draft result. They are
+the only warnings in the checked build logs, so the folder as a whole is NOT
+sorry-free or warning-free. A successful build alone would not establish that.
+Build snapshots, logs and dependency reports: /tmp/freeproducts-proof-audit/.
+
+LEAN 4.35 MIGRATION — 2026-11-09
+The detailed correspondence audit above and line numbers below describe the
+November 5 source snapshots. Migration edits update elaboration, deprecated names
+and proof-local instance syntax without changing theorem statements or central
+arguments. The old /tmp verification artifacts are historical and may no longer
+be available.
+The abstract tensor definitions have been moved into TensorProducts.lean.
+The old TensorInterfaces.lean export and its 39 unfinished declarations have been
+removed. The repository now has 11 mathematical modules and only the two BL
+source gaps listed above.
+Current verification is the GitHub Actions full build and the generated
+ProofAudit.lean registry of 95 public declarations. This checks their private
+dependencies transitively and rejects sorryAx or any other nonstandard axiom.
+It is not a new claim of 928 individual axiom reports on Lean 4.35. Publication
+to main requires a successful run on the exact final source commit.
+
+FILE ORGANIZATION — 2026-11-09
+Order density and regularity for continuous-function factors and general Banach
+factors now live together in Consequences.lean, including their principal-ideal
+localization helpers and exists_mem_range_principal_freeProduct. The join
+representation remains in BL-FreeProducts.lean; Revisiting-C(K).lean contains
+the induced-embedding proof. Moved statements and proofs are unchanged. The
+shared expression-error estimate in Revisiting-C(K).lean is now public so both
+files reuse it. Historical file and line references below remain as recorded.
+
+DEFINITIONS AND INTERPRETATION
+Definition 2.6 (p. 7): OrderIdeal.IsPrime, VL-Freeproducts.lean:422.
+  Improper prime ideals are allowed in Section 2, exactly as the PDF says.
+  Section 6 uses properPrimeIdeals, CountableSpectra.lean:33, excluding top.
+Definition 6.5 (p. 28): IsCountablePrimeInjective (:146) and
+  HasCountablePrimeUniversalDisposition (:155), CountableSpectra.lean.
+  The countability condition is on B, not on the target or its Hamel dimension.
+  Sublattice-inclusion tests are equivalent to arbitrary embedding tests via
+  the range-identification/extension helpers used throughout the proofs.
+ClosedCone permits nonconvex cones, and closed polyhedral cones are finite
+  unions of convex polyhedral cones. Open polyhedral cones use finite unions
+  of nonempty finite lists of strict homogeneous inequalities, as in the PDF.
+FiniteArchimedeanClass denotes classes of NONZERO vectors; "finite" excludes
+  the extra top class of zero and does not impose finite cardinality.
+Free lattices on sets and on real vector spaces are related by choosing a Hamel
+  basis. Proposition 2.3 uses IsFreeOver, which directly states the linear
+  universal property. Zero-based sequence indices and lifted Boolean indices
+  are harmless changes of representation.
+Theorem 5.1 uses lattice seminorms; Proposition 5.6 assumes uniform boundedness.
+  Both requirements now appear explicitly in the authoritative PDF.
+Nonempty compact spaces and the intended nonzero cases are accepted, as requested.
+
+PROOF-STRATEGY VERDICT
+The central arguments match: prime-quotient amalgamation; open supports and the
+polyhedral distance partner; strong-unit join characters and finite generated
+stages; principal-ideal reduction for Banach completion and order density;
+finite projections for Banach injectivity; countable cuts and prime-kernel
+extension; and the cardinally bounded transfinite pushout construction.
+The three previously identified construction differences have been removed:
+Example 4.9 now uses the ball/unit-section homeomorphism and sphere projection;
+Example 5.4 uses bounded scalar evaluations on the geometric element's zero set;
+and the omega-one part of Theorem 6.18 uses transfinite recursion and unions.
+Equivalent coordinate formulas, reusable infrastructure and supplied details
+remain necessary in Lean; these are described in the individual entries.
+This is agreement of proof ideas, not a line-by-line translation.
+
+COVERAGE GAPS CLOSED
+1. Proposition 4.10 (p. 19): AVL-FreeProducts.lean:1895,
+   ArchimedeanFreeProduct.exists_join_generated_equiv. The range is precisely
+   the generated join sublattice, and the factor formulas are part of the conclusion.
+2. Observation 6.15 (p. 33): CountableSpectra.lean:2992,
+   exists_extension_of_countable_prime_quotient_classes. The ambient hypothesis
+   is on the classes of each proper prime quotient, without a spectrum-size bound.
+3. Unnumbered consequence (p. 14): AVL-FreeProduct-Cones.lean:2461,
+   ArchimedeanFreeProduct.exists_cone_product_equiv. The proof pairs the dual
+   cone maps, pulls back, uses finite generation of the AVL product, and applies
+   uniqueness of the two universal maps. Its conclusion states the coordinate
+   projection formulas on both factors. This follows the draft's duality argument.
+The old Observation 6.2 about countable-density spectra has been removed from
+this PDF. It is not a gap in the requested reference and should not be added
+on the basis of the superseded draft.
+
+RESULT-BY-RESULT CORRESPONDENCE
+
+Proposition 2.1 (PDF p. 6) — COVERED
+  FreeProducts/VL-Freeproducts.lean:120 — VectorLattice.nonempty_freeProduct
+  Statement: Existence for arbitrary families.
+  Proof: Same quotient construction. Lean starts with the free lattice on the disjoint union of
+  underlying sets and imposes linearity as well as modulus relations; the draft starts with the free
+  lattice on the algebraic direct sum, so linearity is already imposed.
+
+Observation 2.2 (PDF p. 6) — COVERED
+  FreeProducts/VL-Freeproducts.lean:171 — VectorLattice.FreeProduct.inclusion_injective
+  Statement: Canonical factor embeddings.
+  Proof: Same proof: use the identity on one factor and zero on all the other factors to obtain a
+  left inverse.
+
+Proposition 2.3 (PDF p. 6) — COVERED
+  FreeProducts/VL-Freeproducts.lean:183 — VectorLattice.FreeProduct.isFreeOver_directSum
+  Statement: Equivalent universal-property formulation, using IsFreeOver.
+  Proof: Same universal-property proof, via extension from each summand and uniqueness on the
+  generators.
+
+Proposition 2.4 (PDF p. 6) — COVERED
+  FreeProducts/VL-Freeproducts.lean:256 — VectorLattice.FreeProduct.exists_quotient_equiv
+  Statement: Quotient by the ideal generated by the factor ideals, with canonical maps.
+  Proof: Same generated-ideal quotient and factorization of compatible maps. The Lean equivalence
+  explicitly commutes with the quotient and inclusion maps.
+
+Proposition 2.5 (PDF p. 7) — COVERED
+  FreeProducts/VL-Freeproducts.lean:392 — VectorLattice.nonempty_pushout
+  Statement: Existence with the full pushout universal property.
+  Proof: Same construction: quotient the binary free product by the ideal generated by the
+  differences of the two images of the common domain.
+
+Proposition 2.7 (PDF p. 7) — COVERED
+  FreeProducts/VL-Freeproducts.lean:426 — OrderIdeal.isTotal_quotient_iff_isPrime
+  Statement: Primality is equivalent to total order of the quotient; improper prime ideals are
+  allowed here.
+  Proof: The draft cites this equivalence without a proof. Lean proves it using the disjoint
+  positive and negative parts and the quotient order; no new hypothesis is assumed.
+
+Proposition 2.8 (PDF p. 7) — COVERED
+  FreeProducts/VL-Freeproducts.lean:448 — OrderIdeal.exists_prime_restriction
+  FreeProducts/VL-Freeproducts.lean:554 — OrderIdeal.exists_prime_extension
+  Statement: Both restriction and extension of prime ideals.
+  Proof: Same maximal-ideal argument. Lean works with maximal ideals having the prescribed
+  restriction, instead of first reducing to a zero ideal in a totally ordered sublattice. The
+  generated-ideal intersection and disjointness contradiction are proved.
+
+Proposition 2.9 (PDF p. 8) — COVERED
+  FreeProducts/VL-Freeproducts.lean:782 — VectorLattice.nonempty_totalAmalgam
+  Statement: Injective amalgamation of totally ordered vector lattices.
+  Proof: Same vector-space quotient, salient positive cone, Zorn extension to a total cone, and
+  injective canonical maps.
+
+Proposition 2.10 (PDF p. 9) — COVERED
+  FreeProducts/VL-Freeproducts.lean:881 — VectorLattice.Pushout.left_injective
+  Statement: Injectivity of the opposite map in a pushout.
+  Proof: Same proof: separate a nonzero element by a prime quotient, extend the inverse-image prime
+  to the other factor, amalgamate the resulting chains, and invoke the pushout universal property.
+
+Corollary 2.11 (PDF p. 9) — COVERED
+  FreeProducts/VL-Freeproducts.lean:996 — VectorLattice.FreeProduct.induced_injective
+  Statement: Arbitrary families of injective lattice homomorphisms.
+  Proof: Same finite-support and successive-pushout mechanism. Lean uses partial extensions on
+  finite sets of factor indices, sending the remaining factors to zero when constructing the
+  detecting map.
+
+Lemma 3.1 (PDF p. 10) — COVERED
+  FreeProducts/Revisiting-C(K).lean:91 — BanachLattice.FreeProduct.local_zero_ideal_unit_not_mem
+  FreeProducts/Revisiting-C(K).lean:112 — BanachLattice.FreeProduct.local_quotient_estimate
+  FreeProducts/Revisiting-C(K).lean:130 — BanachLattice.FreeProduct.exists_neighborhood_quotient
+  Statement: Private lemmas prove nonvanishing for the specified closed generated ideal and the
+  quotient estimate.
+  Proof: Same supported positive function and closed disjoint-complement ideal. Lean makes the
+  local-to-quotient estimate explicit by killing the positive part of the excess over the local
+  bound; merely applying a quotient to a local inequality would omit this step.
+
+Theorem 3.2 (PDF p. 10) — COVERED
+  FreeProducts/BL-FreeProducts.lean:1724 — BanachLattice.FreeProduct.exists_join_equiv
+  FreeProducts/BL-FreeProducts.lean:1108 — BanachLattice.FreeProduct.interpolate_joinMk
+  Statement: Explicit lattice equivalence and the two weighted factor formulas; uses nonempty
+  compact spaces.
+  Proof: The draft recalls the earlier join theorem without reproducing its proof. Lean constructs
+  the weighted factor maps, identifies normalized scalar characters with join points, and obtains
+  the lattice equivalence and two-sided norm bounds. It does not claim an isometry for the supremum
+  norm.
+
+Theorem 3.3 (PDF p. 11) — COVERED
+  FreeProducts/Revisiting-C(K).lean:441 — BanachLattice.FreeProduct.induced_injective_of_continuousFunctions
+  Statement: Injectivity for embeddings of the two C(K) factors into Banach lattices.
+  Proof: Same neighborhood quotients, nonzero positive tensor, local approximation on finite lattice
+  expressions, uniform approximation in C(join), and contradiction at an arbitrary join point. The
+  tensor infrastructure is proved in TensorProducts.lean.
+
+Example 4.1 (PDF p. 12) — COVERED
+  FreeProducts/Counterexamples.lean:109 — VectorLattice.Counterexamples.archimedean_amalgam_kills_extra_coordinate
+  FreeProducts/Counterexamples.lean:143 — VectorLattice.Counterexamples.exists_nonarchimedean_pushout
+  Statement: The stated sequence diagram, failure of injectivity, and non-Archimedean ordinary
+  pushout.
+  Proof: Same eventually constant sequence diagram and truncation inequalities forcing the extra
+  coordinate to zero in every Archimedean amalgam. Ordinary-pushout injectivity then gives the non-
+  Archimedean example.
+
+Theorem 4.2 (PDF p. 14) — COVERED
+  FreeProducts/ConeDuality.lean:95 — VectorLattice.ConeRepresentation.coneDuality
+  Statement: Actual contravariant categorical equivalence; not merely an object representation
+  theorem.
+  Proof: The draft cites the representation and morphism correspondence. Lean proves these in Baker-
+  Beynon-Duality.lean and assembles a full, faithful, essentially surjective functor into an actual
+  categorical equivalence in ConeDuality.lean.
+
+Lemma 4.3 (PDF p. 14) — COVERED
+  FreeProducts/AVL-FreeProduct-Cones.lean:543 — VectorLattice.ConeRepresentation.vanishingIdeal_le_productRelationsIdeal_iff
+  Statement: Exact ideal-containment/covering equivalence. Open polyhedral cones are characterized
+  as open supports by a proved private lemma.
+  Proof: Same support argument in both directions. The proved isOpenPolyhedralCone_iff_support
+  realizes open polyhedral cones as open supports; ideal_mem_of_support_subset supplies the support-
+  containment domination step.
+
+Lemma 4.4 (PDF p. 15) — COVERED
+  FreeProducts/AVL-FreeProduct-Cones.lean:793 — VectorLattice.ConeRepresentation.hasPolyhedralCover_of_polyhedral
+  Statement: One polyhedral factor suffices for the cover condition.
+  Proof: Same choices U = complement C and V = projection of W intersected with C times the ambient
+  space. Lean supplies the finite homogeneous inequality elimination and openness details.
+
+Lemma 4.5 (PDF p. 15) — COVERED
+  FreeProducts/AVL-FreeProduct-Cones.lean:1038 — VectorLattice.ConeRepresentation.exists_partner_strict_productRelationsIdeal
+  Statement: Nonpolyhedral cone has a partner in one higher dimension with strict ideal containment.
+  Proof: Same distance partner, nonpolyhedral zero-height section of the closure, and witness
+  dist(x,y) < t. A hypothetical cover forces its second open polyhedral member to equal the
+  complement of the distance partner.
+
+Proposition 4.6 (PDF p. 16) — COVERED
+  FreeProducts/AVL-FreeProduct-Cones.lean:2117 — VectorLattice.finitely_generated_archimedean_tfae
+  Statement: All five conditions, including polyhedrality of every representing cone. Free vector
+  lattices use the free-on-a-set model.
+  Proof: Same five-way argument: cone-cover criterion and distance partner, finite support for free
+  embeddings, polyhedral image under a piecewise linear map, and projective splitting. The classical
+  finite-presentation/projectivity implications cited in the draft are proved via polyhedral
+  retractions in Lean.
+
+Corollary 4.7 (PDF p. 17) — COVERED
+  FreeProducts/AVL-FreeProduct-Cones.lean:2280 — VectorLattice.archimedean_freeProducts_iff_locally_projective
+  Statement: Arbitrary Archimedean partners, equivalent to local projectivity.
+  Proof: Same finite-generated reduction and preservation of embeddings. Lean explicitly places both
+  vectors in an Archimedean finite subproduct and reflects the inequalities there.
+
+Example 4.8 (PDF p. 17) — COVERED
+  FreeProducts/Counterexamples.lean:264 — VectorLattice.Counterexamples.finiteRangeSequences_locally_projective
+  FreeProducts/Counterexamples.lean:397 — VectorLattice.Counterexamples.finiteRangeSequences_not_free_embeddable
+  Statement: Local projectivity plus nonembeddability into every free-on-a-set vector lattice; the
+  five-way equivalence gives local free embeddability.
+  Proof: Same finite-fiber partition and finite-connected-region component obstruction. Lean uses a
+  finite convex cover and only the weaker fact that there cannot be infinitely many pairwise
+  disjoint nonzero components; the coordinate indicators already suffice. It does not separately
+  state the draft's stronger auxiliary claim that all components form a finite set.
+
+Example 4.9 (PDF p. 18) — COVERED
+  FreeProducts/Counterexamples.lean:951 — VectorLattice.Counterexamples.freeBanach_pair_not_archimedean
+  FreeProducts/Counterexamples.lean:972 — VectorLattice.Counterexamples.freeBanach_comparison_not_injective
+  Statement: The concrete two- and four-dimensional Euclidean free Banach factors and the
+  noninjective comparison map.
+  Proof: Same circular cone, distance partner and sphere pullbacks. Lean now constructs the closed-
+  ball/unit-section homeomorphism and its inverse, including continuity at the center, then composes
+  it with the surjective sphere projection. The ball formula is the draft's displayed formula after
+  multiplication by the positive radius before normalization. The circular map is likewise radially
+  normalized on the unit circle. Existing homogeneous functional calculus implements the pullbacks
+  with a positive radial weight, which preserves their injectivity. The induced ordinary free-
+  product embedding gives the same obstruction.
+
+Proposition 4.10 (PDF p. 19) — COVERED
+  FreeProducts/AVL-FreeProducts.lean:954 — VectorLattice.ArchimedeanFreeProduct.join_map_injective
+  FreeProducts/AVL-FreeProducts.lean:1369 — VectorLattice.ArchimedeanFreeProduct.mem_generated
+  FreeProducts/AVL-FreeProducts.lean:1895 — VectorLattice.ArchimedeanFreeProduct.exists_join_generated_equiv
+  Statement: The canonical equivalence with the generated sublattice of C(join) is now explicit,
+  including the weighted factor formulas. Dense injective unital representations cover the strong-
+  unit lattices in the draft; completeness is not assumed.
+  Proof: Same normalized-character argument: scalar_eq_join_eval identifies unit-normalized
+  characters with join evaluations, and join_map_injective separates points. The new
+  exists_join_generated_equiv assembles that map with its generated range into the canonical
+  equivalence, including the weighted factor formulas. This applies to incomplete strong-unit
+  factors through their dense unital representations, as required.
+
+Proposition 4.11 (PDF p. 19) — COVERED
+  FreeProducts/AVL-FreeProducts.lean:1451 — VectorLattice.ArchimedeanFreeProduct.induced_injective
+  Statement: Proved for arbitrary families, stronger than the binary statement; finite-generated
+  stages occur in the proof.
+  Proof: Same order-unit completions, injective extension of the factor embeddings, C(K) free-
+  product injectivity, and directed assembly of finitely generated stages. exists_finite_stage_maps
+  and induced_injective_binary implement the directed argument; Lean additionally extends the result
+  to arbitrary families.
+
+Theorem 5.1 (PDF p. 20) — COVERED
+  FreeProducts/Consequences/NormAndCompletion.lean:529 — BanachLattice.FreeProduct.archimedean_completion
+  Statement: Generated-sublattice equivalence, canonical factor equations, dense range, supremum
+  norm formula, and isometric Banach lattice completion. Uses lattice seminorms, as explicitly
+  specified in this PDF.
+  Proof: Same principal-ideal reduction for injectivity, induction over finitely many factors, and
+  finite-support argument for arbitrary families. The maximal lattice seminorm is identified using
+  the existing completion/universal-property machinery. Lean transports the norm to the AVL product
+  through its equivalence with the generated Banach sublattice, instead of installing a new norm
+  instance on its carrier.
+
+Proposition 5.2 (PDF p. 21) — COVERED
+  FreeProducts/Revisiting-C(K).lean:1089 — BanachLattice.FreeProduct.exists_mem_range_principal_freeProduct
+  Statement: Every completed element lifts through principal ideals with their order-unit Banach
+  norms, including zero factors.
+  Proof: Same rapidly converging generated approximants, small positive factor majorants, weighted
+  positive regulators, and convergence of their lifts in the principal-ideal free product. Lean uses
+  a Cauchy sequence of lifted approximants instead of writing the telescoping series explicitly; the
+  estimates and purpose coincide.
+
+Corollary 5.3 (PDF p. 23) — COVERED
+  FreeProducts/Consequences.lean:330 — BanachLattice.FreeProduct.archimedean_induced_orderDense
+  FreeProducts/Consequences.lean:346 — BanachLattice.FreeProduct.archimedean_induced_regular
+  Statement: Injectivity, order density and regularity for finitely many factors; includes the
+  binary statement.
+  Proof: Same lift to principal ideals, transfer to C(K) factors, use of join order density, and
+  injective return to the original free product. The join-support argument is in BL-
+  FreeProducts.lean; Revisiting-C(K).lean handles principal ideals and Consequences.lean handles
+  finite families and regularity.
+
+Example 5.4 (PDF p. 23) — COVERED
+  FreeProducts/Counterexamples.lean:1128 — VectorLattice.Counterexamples.countable_freeProduct_closed_ideal_disjoint
+  FreeProducts/Counterexamples.lean:1151 — VectorLattice.Counterexamples.countable_freeProduct_not_orderDense
+  Statement: A positive geometric element has closed principal ideal intersecting the generated
+  sublattice only in zero.
+  Proof: Same bounded scalar evaluations on the zero set in the FBL[l1] representation. Given
+  arbitrary finite scalar values, one unused coordinate cancels their weighted sum and all remaining
+  coordinates are zero. The resulting scalar homomorphism vanishes on the closed principal ideal and
+  agrees on the finite expression with the original evaluation. Pointwise separation in FBL[l1]
+  gives f = 0. The former cancellation endomorphism has been removed.
+
+Corollary 5.5 (PDF p. 24) — COVERED
+  FreeProducts/Consequences.lean:370 — BanachLattice.FreeProduct.inclusion_regular
+  Statement: Regularity of each factor for arbitrary index families, expressed by preservation of
+  decreasing nets with infimum zero.
+  Proof: Same decomposition into one factor and the free product of its complement, followed by
+  binary regularity. Binary regularity is established through principal ideals and the continuous-
+  function join.
+
+Proposition 5.6 (PDF p. 24) — COVERED
+  FreeProducts/Consequences.lean:526 — BanachLattice.FreeProduct.induced_injective
+  Statement: Arbitrary uniformly bounded families of injective bounded lattice homomorphisms; the
+  bound is necessary for the induced Banach map and appears explicitly in this PDF.
+  Proof: Same injectivity on the order-dense AVL sublattice for finite families, then commuting
+  finite-factor projections and norm approximation for arbitrary families. Uniform boundedness is an
+  explicit hypothesis.
+
+Lemma 6.1 (PDF p. 25) — COVERED
+  FreeProducts/CountableSpectra.lean:1523 — VectorLattice.CountableSpectra.mem_generated_ideal_iff
+  FreeProducts/CountableSpectra.lean:1372 — VectorLattice.CountableSpectra.spectrum_cardinal_sublattice
+  FreeProducts/CountableSpectra.lean:912 — VectorLattice.CountableSpectra.spectrum_cardinal_le_of_surjective
+  Statement: Generated-ideal intersection and spectrum cardinal inequalities. Quotients are covered
+  by applying the surjective version to the quotient map.
+  Proof: Same solidity argument for the generated-ideal intersection, prime extension for
+  sublattices, and injectivity of inverse images of primes under quotient/surjective maps.
+  Properness is checked.
+
+Lemma 6.2 (PDF p. 26) — COVERED
+  FreeProducts/CountableSpectra.lean:358 — VectorLattice.CountableSpectra.archimedeanClasses_cardinal_le_spectrum
+  FreeProducts/CountableSpectra.lean:467 — VectorLattice.CountableSpectra.cardinal_le_power_archimedeanClasses
+  Statement: Both inequalities, with finite/nonzero Archimedean classes corresponding to the draft's
+  Gamma.
+  Proof: Same infinitesimal ideals indexed by nonzero Archimedean classes and separating real linear
+  coordinates. Lean chooses a linear functional vanishing on the infinitesimal ideal and proves
+  nonvanishing on the class using the scalar-cut remainder. The draft first defines the supremum
+  functional on a principal subspace and extends it. Thus the functional construction is
+  reorganized, with the same infinitesimal quotient and scalar-cut argument.
+
+Proposition 6.3 (PDF p. 27) — COVERED
+  FreeProducts/CountableSpectra.lean:1508 — VectorLattice.CountableSpectra.cardinal_le_continuum
+  FreeProducts/CountableSpectra.lean:2337 — VectorLattice.CountableSpectra.exists_small_sublattice_representatives
+  Statement: Cardinality at most continuum and at most 2^continuum representatives. The
+  representative theorem covers every lattice of size at most continuum together with a sublattice,
+  hence embedding types up to equivalence.
+  Proof: Same separating product of prime quotients, continuum bound for each chain, and coding
+  structures with chosen sublattices on subsets of a continuum-sized set. Coding sublattices
+  suffices for embedding types by identifying an embedding with its range.
+
+Example 6.4 (PDF p. 27) — COVERED
+  FreeProducts/Counterexamples.lean:1220 — VectorLattice.Counterexamples.lex_sequences_countable_spectrum
+  FreeProducts/Counterexamples.lean:1230 — VectorLattice.Counterexamples.lex_sequences_not_countably_generated
+  FreeProducts/Counterexamples.lean:1191 — VectorLattice.Counterexamples.lex_ideal_classification
+  Statement: Countable spectrum, continuum Hamel dimension, no countable generating set, and private
+  classification of ideals.
+  Proof: Same least nonzero coordinate classification of ideals and linearly independent family of
+  power sequences giving Hamel dimension continuum. Lean uses all real parameters, which includes
+  the positive-parameter family in the draft.
+
+Theorem 6.6 (PDF p. 28) — COVERED
+  FreeProducts/CountableSpectra.lean:1574 — VectorLattice.CountableSpectra.extension_with_generated_kernel
+  FreeProducts/CountableSpectra.lean:1588 — VectorLattice.CountableSpectra.isCountablePrimeInjective_of_universalDisposition
+  Statement: Extension with exactly the generated kernel and the injectivity consequence.
+  Proof: Same quotient by the ambient ideal generated by the kernel, extension of the induced
+  embedding through universal disposition, and composition with the quotient. Exact equality of
+  kernels is part of the Lean conclusion.
+
+Example 6.7 (PDF p. 28) — COVERED
+  FreeProducts/Counterexamples.lean:1262 — VectorLattice.Counterexamples.real_pair_uncountable_spectrum
+  FreeProducts/Counterexamples.lean:1338 — VectorLattice.Counterexamples.cylinder_union_uncountable_spectrum
+  Statement: Both failure of closure under binary free products and failure under increasing
+  countable unions. The latter is written as the sublattice generated by the increasing union, which
+  equals that union.
+  Proof: Same distinct scalar-character kernels for two real factors and distinct evaluation kernels
+  on finite-coordinate cylinder functions. Positive ratios are parameterized by exp(r). The
+  increasing union is written as its generated sublattice, an equivalent carrier here because the
+  family is increasing.
+
+Theorem 6.8 (PDF p. 28) — COVERED
+  FreeProducts/CountableSpectra.lean:2904 — VectorLattice.CountableSpectra.exists_small_universalDisposition
+  FreeProducts/CountableSpectra.lean:2929 — VectorLattice.CountableSpectra.exists_countablePrimeUniversalDisposition
+  Statement: Exact cardinal bound (max{|E|,2^continuum})^continuum; universal disposition for all
+  lattices of size at most continuum, and its countable-spectrum consequence. Transfinite
+  construction is included.
+  Proof: Same two-level transfinite pushout construction, including a bounded family of
+  representative requirements, successive amalgamation, and directed colimits at limit stages. The
+  outer order has type c+, and its regular cofinality captures every domain of size at most c. The
+  exact bound (max{|X|,2^c})^c and the stronger universal disposition for all size-at-most-c
+  lattices are proved.
+
+Corollary 6.9 (PDF p. 29) — COVERED
+  FreeProducts/CountableSpectra.lean:2970 — VectorLattice.CountableSpectra.exists_nontrivial_countablePrimeUniversalDisposition
+  FreeProducts/CountableSpectra.lean:2945 — VectorLattice.CountableSpectra.exists_countablePrimeInjective
+  Statement: Nonzero target with both size bounds and injective-envelope existence for every
+  lattice.
+  Proof: Same specialization of the preceding construction to a nonzero one-dimensional lattice,
+  cardinal arithmetic and the powerset spectrum bound. Relative injectivity follows from universal
+  disposition.
+
+Lemma 6.10 (PDF p. 30) — COVERED
+  FreeProducts/CountableSpectra.lean:307 — VectorLattice.CountableSpectra.orderedUltrapower_hasCountableInterpolation
+  Statement: Arbitrary nonprincipal ultrafilters; includes empty sides of the cut.
+  Proof: Same finite-prefix diagonal argument in the ultrapower and explicit treatment of empty
+  sides of the cut. Lean chooses a point strictly between finite bounds instead of requiring their
+  midpoint; this does not change the construction's mechanism.
+
+Lemma 6.11 (PDF p. 31) — COVERED
+  FreeProducts/CountableSpectra.lean:728 — VectorLattice.CountableSpectra.countable_cut_points
+  Statement: Countable cofinal/coinitial subsets encoded by one countable set, filtered to each
+  side. Linear subspaces of a chain are sublattices.
+  Proof: Same split according to whether the residual Archimedean classes have a largest element.
+  The no-largest-class case uses a cofinal sequence and twice-the-difference bounds; the maximal-
+  class case uses scalar approximation and countably many class representatives.
+
+Lemma 6.12 (PDF p. 32) — COVERED
+  FreeProducts/CountableSpectra.lean:860 — VectorLattice.CountableSpectra.ordered_lattice_embedding_extension
+  Statement: Extension of ordered embeddings into a countably interpolating chain, without
+  countable-dimension assumptions.
+  Proof: Same Zorn argument for partial ordered linear embeddings, countable cut realization, and
+  extension across one new vector by a prescribed interpolating value.
+
+Theorem 6.13 (PDF p. 32) — COVERED
+  FreeProducts/CountableSpectra.lean:1004 — VectorLattice.CountableSpectra.orderedUltrapower_isCountablePrimeInjective
+  FreeProducts/CountableSpectra.lean:988 — VectorLattice.CountableSpectra.isCountablePrimeInjective_of_countableInterpolation
+  Statement: Both arbitrary nonprincipal ultrapowers and the more general countably interpolating
+  chain statement.
+  Proof: Same prime extension of the kernel, countability of classes in the prime quotient,
+  extension of the induced ordered embedding, and composition with the quotient. Lean allows the
+  improper prime so the zero homomorphism is covered without a separate branch.
+
+Corollary 6.14 (PDF p. 33) — COVERED
+  FreeProducts/Counterexamples.lean:1361 — VectorLattice.Counterexamples.hyperreal_injective_not_universalDisposition
+  Statement: One ordered real ultrapower witnesses strictness; enough for the existential
+  nonimplication.
+  Proof: Same obstruction: a chain cannot contain the coordinatewise real plane, while universal
+  disposition must embed that plane. Lean uses the canonical hyperreal ultrapower as the witness;
+  the stated conclusion is the existential nonimplication.
+
+Observation 6.15 (PDF p. 33) — COVERED
+  FreeProducts/CountableSpectra.lean:1765 — VectorLattice.CountableSpectra.isCountablePrimeInjective_pi
+  FreeProducts/CountableSpectra.lean:1782 — VectorLattice.CountableSpectra.isCountablePrimeInjective_of_retract
+  FreeProducts/CountableSpectra.lean:971 — VectorLattice.CountableSpectra.extension_through_prime
+  FreeProducts/CountableSpectra.lean:2992 — VectorLattice.CountableSpectra.exists_extension_of_countable_prime_quotient_classes
+  Statement: All clauses are proved: extension under countably many Archimedean classes in every
+  proper prime quotient, closure under products, and closure under lattice retracts. The extension
+  theorem assumes no countability of the whole spectrum or of Hamel dimension.
+  Proof: The new exists_extension_of_countable_prime_quotient_classes uses the same prime extension
+  of the kernel and ordered-embedding extension argument under the weaker prime-quotient hypothesis.
+  The zero homomorphism is handled separately so that only proper primes are required. Product
+  extensions are coordinatewise and retract extensions are by composition, as in the draft.
+
+Proposition 6.16 (PDF p. 33) — COVERED
+  FreeProducts/CountableSpectra.lean:1616 — VectorLattice.CountableSpectra.exists_forall_smul_le_of_isCountablePrimeInjective
+  FreeProducts/CountableSpectra.lean:1629 — VectorLattice.CountableSpectra.not_isVLArchimedean_of_isCountablePrimeInjective
+  FreeProducts/CountableSpectra.lean:1640 — VectorLattice.CountableSpectra.not_strongOrderUnit_of_isCountablePrimeInjective
+  FreeProducts/CountableSpectra.lean:1719 — VectorLattice.CountableSpectra.exists_disjoint_positive_sum_of_universalDisposition
+  FreeProducts/CountableSpectra.lean:1743 — VectorLattice.CountableSpectra.exists_positive_forall_nsmul_le_of_universalDisposition
+  Statement: All conclusions: bounded multiples, non-Archimedeanity, no strong unit, disjoint
+  splitting and nonzero infinitesimals.
+  Proof: Same lexicographic-plane test for bounded multiples and positive infinitesimals, and
+  coordinate-plane diagonal test for disjoint splitting. Lean strengthens the first bound from
+  natural multiples to all real multiples.
+
+Proposition 6.17 (PDF p. 33) — COVERED
+  FreeProducts/CountableSpectra.lean:1901 — VectorLattice.CountableSpectra.exists_injective_hom_of_isCountablePrimeInjective
+  FreeProducts/CountableSpectra.lean:1921 — VectorLattice.CountableSpectra.continuum_le_cardinal_of_nontrivial
+  FreeProducts/CountableSpectra.lean:313 — VectorLattice.CountableSpectra.orderedUltrapower_cardinal
+  Statement: Embeddings of every countable-spectrum chain; continuum lower bound and ultrapower
+  equality.
+  Proof: Same lexicographic extension C plus a minor real coordinate, whose nonzero ideals contain
+  the distinguished unit, so an extension nonzero on that unit is injective. For the continuum lower
+  bound, Lean uses the simpler general fact that every nonzero real vector space contains a copy of
+  R, instead of invoking the lexicographic sequence example. Ultrapower cardinal equality is
+  separately proved.
+
+Theorem 6.18 (PDF p. 34) — COVERED
+  FreeProducts/CountableSpectra.lean:2234 — VectorLattice.CountableSpectra.exists_omega_one_colex_embedding
+  FreeProducts/CountableSpectra.lean:1422 — VectorLattice.CountableSpectra.continuum_le_spectrum_of_isCountablePrimeInjective
+  FreeProducts/CountableSpectra.lean:1434 — VectorLattice.CountableSpectra.countable_spectrum_not_injective
+  Statement: All conclusions, including the omega-one chain embedding. The preceding ordinal-chain
+  spectrum cardinality is also proved by colex_spectrum_cardinal.
+  Proof: Same transfinite recursion for the omega-one embedding. Start with e0 mapped to a positive
+  vector, take unions of earlier compatible embeddings, and extend to include each next coordinate
+  using countable-spectrum relative injectivity. A nonzero kernel would contain e0, so the
+  extensions remain injective. WellFoundedLT.fix constructs the family; its final union covers every
+  coordinate. The former maximal-partial-map argument has been removed. The stronger continuum
+  spectrum bound continues to use the draft's finite rational-coordinate stages and distinct real
+  cuts.
+
+Lemma 6.19 (PDF p. 34) — COVERED
+  FreeProducts/Counterexamples.lean:2007 — VectorLattice.Counterexamples.eventuallyConstant_spectrum
+  FreeProducts/Counterexamples.lean:1989 — VectorLattice.Counterexamples.eventuallyAffine_spectrum
+  FreeProducts/Counterexamples.lean:1644 — VectorLattice.Counterexamples.affine_sublattice_eq_top
+  FreeProducts/Counterexamples.lean:1671 — VectorLattice.Counterexamples.sequence_lattices_countable_spectrum
+  Statement: Exact prime spectra and generation by the constant and affine coordinate sequences, not
+  only countability.
+  Proof: Same coordinate-kernel versus tail-ideal classification and the same positive-part formula
+  for coordinate vectors from 1 and b. Lean proves the remaining tail cases by eventual affine
+  domination rather than exposing separate quotient isomorphisms A/c00 = R and B/c00 = R^2_lex. The
+  exact two spectrum equalities and two-generator assertion are proved.
+
+Theorem 6.20 (PDF p. 34) — COVERED
+  FreeProducts/Counterexamples.lean:1702 — VectorLattice.Counterexamples.archimedean_nonextendible_hom
+  FreeProducts/Counterexamples.lean:1849 — VectorLattice.Counterexamples.archimedean_not_universalDisposition
+  FreeProducts/Counterexamples.lean:1764 — VectorLattice.Counterexamples.exists_countable_spectrum_nonarchimedean_pushout
+  Statement: Explicit Archimedean test lattices with countable spectra obstruct injectivity and
+  universal disposition. The final unnumbered non-Archimedean-pushout consequence is also proved.
+  Proof: Same eventual-value homomorphism, truncations b inf m1, and Archimedean contradiction.
+  Universal disposition is contradicted using the augmented eventually constant lattice and the same
+  amalgam. The unnumbered non-Archimedean ordinary-pushout consequence is also proved.
+
+ADDITIONAL UNNUMBERED MATERIAL
+  Archimedeanization, its universal property and the corresponding colimits:
+    AVL-FreeProducts.lean:28, :73, :112, :666, :1479.
+  Prime separation and the embedding into the product of proper prime quotients:
+    CountableSpectra.lean:1491 and :1500; used in :1508.
+  Open polyhedral cones as open supports: AVL-FreeProduct-Cones.lean:107.
+  Geometric cone-product description: coverage gap closed in item 3 above.
+  Ordinal colexicographic spectra: CountableSpectra.lean:2026.
+  Cardinality of arbitrary ordered real ultrapowers: CountableSpectra.lean:313.
+  Non-Archimedean pushouts of countable-spectrum Archimedean lattices:
+    Counterexamples.lean:1764, with the truncation witness in :1722.
+  The stronger auxiliary constructions not separately exposed (all components
+  finite in Example 4.8; quotient
+  identifications in Lemma 6.19) are distinguished from their covered conclusions
+  in the proof notes. If every displayed auxiliary claim is required as an API
+  theorem, these would be additional presentation tasks.
+
+SOURCE HASHES AT AUDIT
+  AVL-FreeProduct-Cones.lean: cd417b18502b7b8eddb4033d2a1daadead86cb227ed3649eaf5be5cc3a2610b2
+  AVL-FreeProducts.lean: d0446c4f622ebe82a4341dfa7ad97e7f3884ff7e58ea700cd80e103b551d8f14
+  BL-FreeProducts.lean: 97ad15bcc290d4656b7cf5961090c3c77931b1291a6829536fac420275c1a09e
+  Baker-Beynon-Duality.lean: ad771e247577d99a70f9035f3c75b2c47e531596374c1b79f8a676babf6ba423
+  ConeDuality.lean: 630d6f8737d062d434c29f311508694c6a3876a077ed3fae207f3277f743e5cb
+  Consequences.lean: ff255afc2154b6a8c3fed803af5b64bdb4f912b1ea95070177e6b285df56352b
+  CountableSpectra.lean: e9330960bb87b1daa4db6f5812bfb2ba5ebd7ed5f6122895ad7a12ee7501e28d
+  Counterexamples.lean: 0d8ade0909b3b395c4fc0130ab88ed6ca4e693d6b922cb6cc2f5abed3994a286
+  Revisiting-C(K).lean: ca235f92554c03b790832e3493c9331b43f681fe3b1c06030cdf9be147ecb90a
+  TensorProducts.lean: aa712cd2e3e3791820e8d436d973aeac753ad686e066a7386c16e887436c54cc
+  VL-Freeproducts.lean: f6d8c4e7a311c81dfa3b564103bad3b827aac7fe8fb24273c65b8092111501cf
+
+This proof-alignment pass changed Counterexamples.lean, CountableSpectra.lean and this audit report.

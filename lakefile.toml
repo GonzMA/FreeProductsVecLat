@@ -1,0 +1,20 @@
+name = "freeProductsBanLat"
+version = "0.1.0"
+defaultTargets = ["FreeProducts"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+weak.linter.style.header = false
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "banLat"
+git = "https://github.com/davidmunozlahoz/banlat"
+rev = "c3c5e1bfc4b2ae61d911aa63d331b9b05a5107d6"
+
+[[lean_lib]]
+name = "FreeProducts"
+globs = ["FreeProducts", "FreeProducts.+"]
+allowNonModules = true
